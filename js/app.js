@@ -1,27 +1,28 @@
+  var map;
+  var infowindow;
+
+  function initMap() {
+    var pyrmont = {lat: -33.867, lng: 151.195};
+
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: pyrmont,
+      zoom: 15
+    });
+
+    infowindow = new google.maps.InfoWindow();
+    var service = new google.maps.places.PlacesService(map);
+    service.nearbySearch({
+      location: pyrmont,
+      radius: 500,
+      type: ['store']
+    }, callback);
+  }
 // This is a simple *viewmodel* - JavaScript that defines the data and behavior of your UI
 function AppViewModel() {
-  var map,aux_element;
+  var aux_element;
   
-      var map;
-      var infowindow;
-
-      function initMap() {
-        var pyrmont = {lat: -33.867, lng: 151.195};
-
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: pyrmont,
-          zoom: 15
-        });
-
-        infowindow = new google.maps.InfoWindow();
-        var service = new google.maps.places.PlacesService(map);
-        service.nearbySearch({
-          location: pyrmont,
-          radius: 500,
-          type: ['store']
-        }, callback);
-      }
-
+      
+  	  initMap();
       function callback(results, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           for (var i = 0; i < results.length; i++) {
@@ -47,5 +48,6 @@ function AppViewModel() {
 
 }
 
-// Activates knockout.js
-ko.applyBindings(new AppViewModel());
+$( document ).ready(function() {
+    ko.applyBindings(new AppViewModel());
+});
