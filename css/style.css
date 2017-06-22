@@ -1,0 +1,36 @@
+
+#map {
+        bottom: 0px;
+    height: 100%;
+    left: 400px;
+    position: absolute;
+    right: 0px;
+    width: 100%;
+}
+
+
+body {
+        font-family: Arial, sans-serif;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+.display_list{
+}
+/*.container {
+        height: 100%;
+        position: relative;
+      }*/
+ul li:hover {
+background-color:#f7cda9;
+
+}
+.input_Text{ 
+   margin-left: -112px;
+    width: 164px;
+    text-indent:10px;
+    font-size: medium;
+    height: 34px;
+    border: solid 2px #000;
+
+}
