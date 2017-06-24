@@ -33,7 +33,8 @@
      <input placeholder="Search…" type="search" name="q" class="input_Text" data-bind="value: query, valueUpdate: 'keyup'" \> 
      
     <div class="content"> 
-        <ul data-bind="foreach: vaild_locations" class="location_list list-group">
+        <ul data-bind="foreach: filteredLocations" class="location_list list-group">
+
         <li class="list-group-item" data-bind="click: $parent.SetMarker">
              <span data-bind="text: name"> </span><br>
               
