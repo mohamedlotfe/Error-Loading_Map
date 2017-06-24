@@ -243,22 +243,24 @@ function AppViewModel() {
           }
           linkedfunc();
         //search section  
+            
             self.filterPlaces   = ko.computed(function() {
              self.filter = ko.observable('');
               
               if (!self.filter) {
                 // return observableArray
-                return  self.locations();
+                return  self.locations;
              }
               else {
                 // filter observableArray and return a subset of matching items
-                return ko.utils.arrayFilter(self.locations(), function(item) {
+                return ko.utils.arrayFilter(self.locations, function(item) {
             return item.name.toLowerCase().indexOf(self.filter)!=-1;
              });
            }
       
-          }, AppViewModel);
-      
+          });
+            
+      }
       };
 
 
