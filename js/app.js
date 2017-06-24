@@ -1,13 +1,15 @@
-  var linkedfunc,removeMarkers,map,create_Place_Marker,marker, infowindow,len,  callback;
- var aux_array=[];
- var temp=0;
-//initlization function for loading map 
+var linkedfunc,query,map,create_Place_Marker,marker, infowindow,len,  callback;
+ var markers=[];
+ 
+ //initlization function for loading map 
   function initMap() {
-    var Egypt = {lat: 30.056508, lng: 31.337882};			//coordinates of center of my map 
+
+    var Egypt = {lat: 30.056508, lng: 31.337882};			//coordinates of center is my map 
 
     map = new google.maps.Map(document.getElementById('map'), {
       center: Egypt,
       zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP, 
       styles:[
     {
         "elementType": "labels",
@@ -217,6 +219,9 @@
       type: ['bank'] }, 
      callback);
 
+
+      
+
   }
 
 // This is a simple *viewmodel* - JavaScript that defines the data and behavior of your UI
@@ -224,156 +229,140 @@ function AppViewModel() {
  
   var setValue;
    var self = this;
-  self.valid_locations =ko.observableArray();
+     self.vaild_locations = ko.observableArray();
+/*
 
-  
+  var beers = [
+        {
+        name: "Dragon's Milk",
+        brewery: "New Holland Brewing Company",
+        style: "Imperial Stout"},
+    {
+        name: "Oberon",
+        brewery: "Bell's",
+        style: "Wheat"},
+    {
+        name: "El Molé Ocho",
+        brewery: "New Holland Brewing Company",
+        style: "Mole Ale"}
+        ];
+
+      self.query= ko.observable('');
+      self.beers = ko.dependentObservable(function() {
+        var search = self.query().toLowerCase();
+        return ko.utils.arrayFilter(beers, function(beer) {
+            return beer.name.toLowerCase().indexOf(search) >= 0;
+        });
+    });*/
       
   	  //
        callback=function (results, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
  		       len=results.length;
           for (var i = 0; i <8; i++) {
-            //create_Place_Marker(results[i]);
-            aux_array.push(results[i]);
+ 
+            markers.push(results[i]);
+          
           }
-          search();
           linkedfunc();
-           //results.forEach(setValue);
+        //search section  
+        self.query= ko.observable('');
+        self.markers = ko.dependentObservable(function() {
+        var search = self.query().toLowerCase();
+        return ko.utils.arrayFilter(markers, function(loc) {
+            return loc.name.toLowerCase().indexOf(search) >= 0;
+          });
+        });
+        
+
         }
-      }
+      };
+
+
+
+         function linkedfunc(){
+
+          for (var i =  0; i <markers.length ; i++) {
+           create_Place_Marker( markers[i]);
+          }
+        
+        }
+
+
+
+
 
       //create marker on places
 	   create_Place_Marker=function (place) {
          marker = new google.maps.Marker({
           map: map,
-          place_id: place.place_id,
           name: place.name,
+          placeId: place.place_id,
           position: place.geometry.location
           });
 
          infowindow = new google.maps.InfoWindow();
+
          google.maps.event.addListener(marker, 'click', function() {
           infowindow.setContent(place.name);
           infowindow.open(map, this);
         });
-          
-        self.valid_locations.push(marker); //append new marker ...loop
-        
+                  
 
         //when i click on marcker itself
-         google.maps.event.addListener(marker, 'click', function() {      
+         google.maps.event.addListener(marker, 'click', function() {  
+
           var X="";
-          if(place.formatted_address)
-            X=place.formatted_address ;
-          infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
-                'Place ID: ' + place.place_id + '<br>' +
+          var Y="";
+          if(place.formatted_address !== undefined)
+            X='address: '+place.formatted_address ;
+          if(place.placeId !== undefined)
+            Y='Place ID: '+place.placeId ;
+         
+          infowindow.setContent('<div><strong>' + place.name + '</strong><br>'  + Y + '<br>' +
                 X+ '</div>' );      
           infowindow.open(map, this);
           map.panTo(marker.position); 
-          marker.setAnimation(google.maps.Animation.BOUNCE);
+          this.setAnimation(google.maps.Animation.BOUNCE);
           
           setTimeout(function(){
           	marker.setAnimation(null);
             }, 1300);
 	        
 	     });
-      }
+         self.vaild_locations.push(marker);
+      };
 
-         function linkedfunc(){
-
-          for (var i =  0; i <aux_array.length ; i++) {
-           create_Place_Marker( aux_array[i]);
-          }
-
-        }
-
-      function search()
-      {
-
-       var input = (document.getElementById('LocInput'));
-       var searchBox = new google.maps.places.SearchBox(input);
-       var bounds = new google.maps.LatLngBounds();  
-       map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-        // Bias the SearchBox results towards current map's viewport.
-        map.addListener('bounds_changed', function() {
-          searchBox.setBounds(map.getBounds());
-        });
-        // Listen for the event fired when the user selects a prediction and retrieve
-        // more details for that place.
-        searchBox.addListener('places_changed', function() {
-          var places = searchBox.getPlaces();
-
-          if (places.length == 0) {
-            return;
-          }
-         
-          aux_array=[];
-          //clearMarkers();
-          self.valid_locations.removeAll();
-          //set new markers for locations
-          for(var j=0;j<5;j++){
-            aux_array.push(places[j]);
-            create_Place_Marker(places[j]);
-            //setValue(places[j]);
-            //bounds.extend(places[j].geometry.location);   
-          }
-                  map.fitBounds(bounds); 
-        });
-
-         google.maps.event.addListener(map, 'bounds_changed', function(){
-            var bounds = map.getBounds();
-            searchBox.setBounds(bounds);
-          });
       
-      }
 
       //marked place when u press on displayed element itself 
       self.SetMarker = function(place){
-	    infowindow.setContent(place.name+" "+place.vicinity);
-          infowindow.open(map, this);	
+          var X="";
+          var Y="";
+          if(place.formatted_address !== undefined)
+            X='address: '+place.formatted_address ;
+          if(place.placeId !== undefined)
+            Y='Place ID: '+place.placeId ;
+         
+          infowindow.setContent('<div><strong>' + place.name + '</strong><br>'  + Y + '<br>' +
+                X+ '</div>' );      
+          infowindow.open(map, this);
           map.panTo(marker.position); 
+          this.setAnimation(google.maps.Animation.BOUNCE);
+          
+          setTimeout(function(){
+            marker.setAnimation(null);
+            }, 1300);
 
-      }
+      };
     
-
-
-       setValue = function(place){
-		var Temp_Location = {};    
-    	Temp_Location.name = place.name;
-    	Temp_Location.position = place.geometry.location.toString();
-    	self.valid_locations.push(Temp_Location);
-      }
-
-    /*   function clearMarkers() {
-      for (var i = 0; i < aux_array.length; i++ ) {
-        if (aux_array[i]) {
-          aux_array[i].setMap(null);
-        }
-      }
-
-      // reset markers
-      markers = []; 
-    } 
-///clear marker =0
- removeMarkers =function()
-  {
-    for (var i = 0; i <6 ; i++) {
-      self.valid_locations.pop();      
-    }
-
-//    self.valid_locations.removeAll();
-  }
-*/
-
-      
-
-       
- 
-
-
-
 }
+//handle Error of loading map
+mapError = () => {
+  // Error handling
+   $('#map').text('Error: Google Maps data could not be loaded');
+};
+
 $( document ).ready(function() {
     ko.applyBindings(new AppViewModel());
 });
