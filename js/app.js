@@ -228,33 +228,10 @@ var linkedfunc,query,map,create_Place_Marker,marker, infowindow,len,  callback;
 function AppViewModel() {
  
   var setValue;
-   var self = this;
-     self.vaild_locations = ko.observableArray();
-/*
+  var self = this;
+  self.filteredLocations = ko.observableArray([]);
+      //self.filterText = ko.observable('');
 
-  var beers = [
-        {
-        name: "Dragon's Milk",
-        brewery: "New Holland Brewing Company",
-        style: "Imperial Stout"},
-    {
-        name: "Oberon",
-        brewery: "Bell's",
-        style: "Wheat"},
-    {
-        name: "El Molé Ocho",
-        brewery: "New Holland Brewing Company",
-        style: "Mole Ale"}
-        ];
-
-      self.query= ko.observable('');
-      self.beers = ko.dependentObservable(function() {
-        var search = self.query().toLowerCase();
-        return ko.utils.arrayFilter(beers, function(beer) {
-            return beer.name.toLowerCase().indexOf(search) >= 0;
-        });
-    });*/
-      
   	  //
        callback=function (results, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -266,16 +243,23 @@ function AppViewModel() {
           }
           linkedfunc();
         //search section  
-        self.query= ko.observable('');
-        self.markers = ko.dependentObservable(function() {
-        var search = self.query().toLowerCase();
-        return ko.utils.arrayFilter(markers, function(loc) {
-            return loc.name.toLowerCase().indexOf(search) >= 0;
-          });
-        });
-        
+        self.filteredLocations.ko.computed(function() {
+              var filter = this.filter().toLowerCase();
 
-        }
+              if (!filter) {
+              
+                // return observableArray
+                return  self.filteredLocations;
+             }
+              else {
+                // filter observableArray and return a subset of matching items
+                return ko.utils.arrayFilter(self.filteredLocations, function(item) {
+            return ko.utils.stringStartsWith(self.filteredLocations.name.toLowerCase(), filter);
+             });
+           }
+      
+          });
+       } 
       };
 
 
@@ -330,7 +314,7 @@ function AppViewModel() {
             }, 1300);
 	        
 	     });
-         self.vaild_locations.push(marker);
+         self.filteredLocations.push(marker);
       };
 
       
