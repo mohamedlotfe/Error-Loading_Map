@@ -229,7 +229,7 @@ function AppViewModel() {
  
   var setValue;
   var self = this;
-  self.filteredLocations = ko.observableArray([]);
+ self.locations = ko.observableArray([]);
       //self.filterText = ko.observable('');
 
   	  //
@@ -243,18 +243,17 @@ function AppViewModel() {
           }
           linkedfunc();
         //search section  
-        self.filteredLocations.ko.computed(function() {
-              var filter = this.filter().toLowerCase();
-
-              if (!filter) {
+            self.locations  = ko.computed(function() {
+             self.filter = ko.observable('');
+              if (!self.filter) {
               
                 // return observableArray
-                return  self.filteredLocations;
+                return  self.locations();
              }
               else {
                 // filter observableArray and return a subset of matching items
-                return ko.utils.arrayFilter(self.filteredLocations, function(item) {
-            return ko.utils.stringStartsWith(self.filteredLocations.name.toLowerCase(), filter);
+                return ko.utils.arrayFilter(self.locations(), function(item) {
+            return item.name.toLowerCase().indexOf(self.filter)!=-1;
              });
            }
       
@@ -293,6 +292,9 @@ function AppViewModel() {
         });
                   
 
+
+             self.locations.push(marker);
+
         //when i click on marcker itself
          google.maps.event.addListener(marker, 'click', function() {  
 
@@ -314,7 +316,7 @@ function AppViewModel() {
             }, 1300);
 	        
 	     });
-         self.filteredLocations.push(marker);
+        
       };
 
       
