@@ -1,13 +1,4 @@
 
-#map {
-        bottom: 0px;
-    height: 100%;
-    left: 400px;
-    position: absolute;
-    right: 0px;
-    width: 100%;
-}
-
 
 body {
         font-family: Arial, sans-serif;
@@ -15,22 +6,31 @@ body {
         margin: 0;
         padding: 0;
       }
-.display_list{
-}
-/*.container {
+#map {
+        bottom: 0px;
         height: 100%;
-        position: relative;
-      }*/
-ul li:hover {
-background-color:#f7cda9;
-
+        left: 400px;
+        position: absolute;
+        right: 0px;
+        width: 100%;
 }
+
+
+
 .input_Text{ 
-   margin-left: -112px;
-    width: 164px;
-    text-indent:10px;
+    margin-left: -112px;
+    width: 220px;
+      position: absolute;
+      z-index: 10;
+      padding-left: 15px;
+    margin: auto;
     font-size: medium;
     height: 34px;
     border: solid 2px #000;
+
+}
+
+ul li:hover {
+        background-color:#f7cda9;
 
 }
