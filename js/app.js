@@ -243,10 +243,10 @@ function AppViewModel() {
           }
           linkedfunc();
         //search section  
-            self.locations  = ko.computed(function() {
+            self.filterPlaces   = ko.computed(function() {
              self.filter = ko.observable('');
-              if (!self.filter) {
               
+              if (!self.filter) {
                 // return observableArray
                 return  self.locations();
              }
@@ -257,8 +257,8 @@ function AppViewModel() {
              });
            }
       
-          });
-       } 
+          }, AppViewModel);
+      
       };
 
 
